@@ -1,0 +1,46 @@
+import requests
+from bs4 import BeautifulSoup
+import random
+
+
+def scrape():
+    print('-'*40)
+    widgets = ["itn","tfa","dyk","otd"]
+    #widgets = ["tfa"]
+    widget = random.choice(widgets)
+    if widget == "itn":
+        print("In the News:")
+    elif widget == "tfa":
+        print("Today's Featured Article:")
+    elif widget == "dyk":
+        print("Did You Know:")
+    elif widget == "otd":
+        print("On This Day:")
+    print('-'*40)
+    url = 'https://en.wikipedia.org/wiki/Main_Page'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    if widget != "tfa":
+        section = soup.find('div', {'id': 'mp-' + widget})
+        ul_tag = section.find('ul')
+        list = ul_tag.find_all('li')
+        for li in list:
+            print(li.text)
+    else:
+        section = soup.find('div', {'id': 'mp-tfa'})
+        paragraphs = section.find_all('p')
+        for p in paragraphs:
+            text = p.getText(strip = True)
+            if text:
+                print(text)
+                break
+    print('-'*40)
+
+while True:
+    scrape()
+    inp = input("Press Enter to scrape again or type 'exit' to quit: ")
+    if inp.lower() == 'exit':
+        break
+    else:
+        for i in range(5):
+            print('-')
