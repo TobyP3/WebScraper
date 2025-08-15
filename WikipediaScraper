@@ -1,0 +1,28 @@
+import requests
+from bs4 import BeautifulSoup
+
+
+def scrape():
+    baseurl = "https://en.wikipedia.org"
+    url = baseurl + "/wiki/Main_Page"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    dyk_section = soup.findAll('div', {'id': 'mp-dyk'})
+    #print(dyk_section)
+    ul_tag = dyk_section[0].find('ul')
+    link_find = ul_tag.find('a', href=True)
+    
+    current_link = link_find['href']
+    url = baseurl + current_link
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    print("-" * 20)
+    title = soup.find('h1', {'id': 'firstHeading'}).text
+    first_paragraph = soup.find('p')
+    print(title, first_paragraph.text, sep='\n')
+
+print("-" * 20)
+scrape()
+
+
+
