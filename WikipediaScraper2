@@ -1,46 +1,63 @@
 import requests
 from bs4 import BeautifulSoup
 import random
+import csv
+import datetime
 
 
-def scrape():
-    print('-'*40)
+def save_results(data):
+    filename="wikipedia_scraper.csv"
+    today = datetime.date.today().isoformat()
+    with open(filename, mode="a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow([today])
+        for item in data:
+            writer.writerow([item])
+
+def scrape(scraped):
+    data_list = []
     widgets = ["itn","tfa","dyk","otd"]
-    #widgets = ["tfa"]
-    widget = random.choice(widgets)
-    if widget == "itn":
-        print("In the News:")
-    elif widget == "tfa":
-        print("Today's Featured Article:")
-    elif widget == "dyk":
-        print("Did You Know:")
-    elif widget == "otd":
-        print("On This Day:")
-    print('-'*40)
-    url = 'https://en.wikipedia.org/wiki/Main_Page'
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    if widget != "tfa":
-        section = soup.find('div', {'id': 'mp-' + widget})
-        ul_tag = section.find('ul')
-        list = ul_tag.find_all('li')
-        for li in list:
-            print(li.text)
-    else:
-        section = soup.find('div', {'id': 'mp-tfa'})
-        paragraphs = section.find_all('p')
-        for p in paragraphs:
-            text = p.getText(strip = True)
-            if text:
-                print(text)
-                break
-    print('-'*40)
+    for widget in widgets:
+        url = 'https://en.wikipedia.org/wiki/Main_Page'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        if widget != "tfa":
+            section = soup.find('div', {'id': 'mp-' + widget})
+            ul_tag = section.find('ul')
+            list = ul_tag.find_all('li')
+            data_list.append(widget)
+            for li in list:
+                data = li.text
+                data_list.append(data)
 
-while True:
-    scrape()
-    inp = input("Press Enter to scrape again or type 'exit' to quit: ")
-    if inp.lower() == 'exit':
-        break
+        else:
+            data_list.append(widget)
+            section = soup.find('div', {'id': 'mp-tfa'})
+            paragraphs = section.find_all('p')
+            for p in paragraphs:
+                text = p.getText()
+                if text:
+                    data = text
+                    data_list.append(data)
+                    break
+    
+    if scraped == False:
+        save_results(data_list)
     else:
-        for i in range(5):
-            print('-')
+        print("Data already scraped today.")  
+
+def check_scraped():
+    with open("wikipedia_scraper.csv", mode="r", encoding="utf-8") as file:
+        lines = file.readlines()
+        for line in reversed(lines):
+            line = line.strip()
+            try:
+                last_date = datetime.date.fromisoformat(line)
+                if last_date == datetime.date.today():
+                    return True
+            except ValueError:
+                continue
+    return False
+
+scraped = check_scraped()
+scrape(scraped)
