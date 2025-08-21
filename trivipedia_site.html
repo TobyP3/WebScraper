@@ -4,100 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivipedia</title>
-    <style>
-        main {
-            padding: 40px; 
-        }
-
-        #sections-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 20px;
-            margin-top: 20px;
-            
-        }
-        .section-tile {
-            background-color: #fefefe;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .section-tile h3 {
-            margin-bottom: 15px;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .section-tile ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .section-tile li {
-            background-color: transparent;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee; /* subtle divider between items */
-            transition: all 0.2s;
-        }
-        .section-tile li:last-child {
-            border-bottom: none; /* remove last divider for clean look */
-        }
-        .section-tile li:hover {
-            background-color: #f9f9ff; /* very subtle hover highlight */
-            transform: translateY(-2px);
-        }
-
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #e0e7ff, #f0f2f5);
-            color: #1c1c1e;
-        }
-        #main-title {
-            text-align: center;
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        #datedropdown {
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: 1px solid #ccc; 
-            background-color: #fefefe;
-            font-size: 16px;
-            outline: none; 
-            transition: all 0.2s ease;
-            
-        }
-
-        
-        #datedropdown:hover {
-            border-color: #888;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        
-        #datedropdown:focus {
-            border-color: #5a67d8; 
-            box-shadow: 0 0 8px rgba(90, 103, 216, 0.3);
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <h1 id="main-title">Welcome to Trivipedia</h1>
     </header>
     <main>
-        <section>
-            <label for="datedropdown"></label>
-            <select id="datedropdown">
-                
-            </select>
 
+
+        <div id="search-container">
+            <select id="datedropdown"></select>
+
+            <div id="search-wrapper">
+                <input type="text" id="search-box" placeholder="Search for trivia...">
+                <ul id="search-suggestions" class="autocomplete-list"></ul>
+
+                <button id="search-btn">
+                    <svg fill="#000000" width="800px" height="800px" viewBox="0 -0.24 28.423 28.423" id="_02_-_Search_Button" data-name="02 - Search Button" xmlns="http://www.w3.org/2000/svg">
+                    <path id="Path_215" data-name="Path 215" d="M14.953,2.547A12.643,12.643,0,1,0,27.6,15.19,12.649,12.649,0,0,0,14.953,2.547Zm0,2A10.643,10.643,0,1,1,4.31,15.19,10.648,10.648,0,0,1,14.953,4.547Z" transform="translate(-2.31 -2.547)" fill-rule="evenodd"/>
+                    <path id="Path_216" data-name="Path 216" d="M30.441,28.789l-6.276-6.276a1,1,0,1,0-1.414,1.414L29.027,30.2a1,1,0,1,0,1.414-1.414Z" transform="translate(-2.31 -2.547)" fill-rule="evenodd"/>
+                    </svg>
+                </button>
+            </div>
+
+            
+        </div>
+
+
+        <section>
             <div id="sections-grid">
                 <div class="section-tile" id="itn-tile">
                     <h3>In The News</h3>
@@ -122,65 +57,6 @@
     <footer>
         <p>&copy; 2025 Trivipedia</p>
     </footer>
-    <script>
-        const datedropdown = document.getElementById('datedropdown');
-        const datecontent = document.getElementById('datecontent');
-
-        fetch('http://127.0.0.1:8000/api/data')
-        .then(response => response.json())
-        .then(data => {
-            const dates = Object.keys(data);
-            dates.forEach(date => {
-                const option = document.createElement('option');
-                option.value = date;
-                option.textContent = date;
-                datedropdown.appendChild(option);
-            })
-
-            function displayDataForDate(selectedDate){
-                const sections = ['itn', 'tfa', 'dyk', 'otd'];
-                const dateData = data[selectedDate];
-
-                sections.forEach(section => {
-                    const tile = document.getElementById(`${section}-tile`);
-                    const list = tile.querySelector('ul');
-                    list.innerHTML = '';
-                    if (dateData[section] && dateData[section].length > 0) {
-                        dateData[section].forEach(item => {
-                            const li = document.createElement('li');
-                            li.textContent = item;
-                            list.appendChild(li);
-                        });
-                    } else {
-                        const li = document.createElement('li');
-                        li.textContent = 'No data available';
-                        list.appendChild(li);
-                    }
-                });
-
-                const itnList = document.getElementById('itn-list');
-                itnList.innerHTML = '';
-                dateData.itn.forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = item;
-                    itnList.appendChild(li);
-                });
-                
-            }
-
-            datedropdown.addEventListener('change',(event) => {
-                const selectedDate = event.target.value;
-                displayDataForDate(selectedDate);
-            });
-
-            if (dates.length > 0) {
-                datedropdown.value = dates[0];
-                displayDataForDate(dates[0]);
-            }
-
-        })
-        .catch(error => console.error("Error fetching data:", error));
-
-    </script>
+    <script src="script.js"></script>
 </body>
 </html> 
