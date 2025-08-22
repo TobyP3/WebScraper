@@ -158,3 +158,108 @@ main {
 .autocomplete-list li:hover {
     background-color: #f0f0f0;
 }
+
+
+/* TOGGLE SWITCH */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider background */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+/* Circle inside slider */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+/* Checked state (dark mode ON) */
+input:checked + .slider {
+  background-color: #4a4a4a; /* dark background */
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px); /* slide circle to the right */
+}
+
+.highlight {
+    background-color: #ffeb3b; /* yellow highlight for light mode */
+    color: #000;
+    transition: background-color 0.3s;
+}
+
+
+
+/* DARK MODE */
+body.dark-mode {
+    background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
+    color: #f5f5f7;
+}
+
+body.dark-mode .section-tile {
+    background-color: #2c2c2e;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .section-tile li {
+    border-bottom: 1px solid #444;
+}
+
+body.dark-mode .section-tile li:hover {
+    background-color: #3a3a3c;
+}
+
+body.dark-mode #datedropdown,
+body.dark-mode #search-box,
+body.dark-mode #search-btn {
+    background-color: #3a3a3c;
+    border: 1px solid #555;
+    color: #f5f5f7;
+}
+
+body.dark-mode .autocomplete-list {
+    background-color: #2c2c2e;
+    border: 1px solid #555;
+}
+
+body.dark-mode .autocomplete-list li:hover {
+    background-color: #3a3a3c;
+}
+
+body.dark-mode #search-btn svg {
+    fill: #f5f5f7; /* white */
+}
+
+body.dark-mode .highlight {
+    background-color: #ffd700; /* darker yellow for dark mode */
+    color: #000;
+}
+

@@ -5,6 +5,8 @@ const searchStatus = document.getElementById('search-status');
 const sections = ['itn', 'tfa', 'dyk', 'otd'];
 const searchSuggestions = document.getElementById('search-suggestions');
 
+
+
 fetch('http://127.0.0.1:8000/api/data')
 .then(response => response.json())
 .then(data => {
@@ -45,6 +47,7 @@ fetch('http://127.0.0.1:8000/api/data')
                 searchBox.value = match.text;
                 datedropdown.value = match.date;
                 displayDataForDate(match.date);
+                highlightSearch(match.text);
                 searchStatus.textContent = `Found in ${match.section.toUpperCase()} on ${match.date}`;
                 searchSuggestions.innerHTML = ''; // hide suggestions
 
@@ -118,6 +121,8 @@ fetch('http://127.0.0.1:8000/api/data')
                     if (match) {
                         datedropdown.value = date;
                         displayDataForDate(date);
+                        highlightSearch(term);
+
                         searchStatus.textContent = `Found in ${section.toUpperCase()} on ${date}`;
                         found = true;
                         return;
@@ -134,3 +139,46 @@ fetch('http://127.0.0.1:8000/api/data')
     
 })
 .catch(error => console.error("Error fetching data:", error));
+
+document.addEventListener("DOMContentLoaded", () => {
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+
+    // Load saved theme
+    if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+        darkModeToggle.checked = true; // show switch as ON
+    }
+
+    darkModeToggle.addEventListener("change", () => {
+        if (darkModeToggle.checked) {
+            document.body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+        } else {
+            document.body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", "disabled");
+        }
+    });
+
+});
+
+function highlightSearch(term) {
+    if (!term) return;
+    const sections = ['itn', 'tfa', 'dyk', 'otd'];
+    sections.forEach(section => {
+        const tile = document.getElementById(`${section}-tile`);
+        const listItems =tile.querySelectorAll('li');
+
+        listItems.forEach(li => {
+            const text = li.textContent;
+            const regex = new RegExp(`(${term})`, 'gi');
+            li.innerHTML = text.replace(regex,  '<span class="highlight">$1</span>');
+        });
+
+    });
+}
+
+document.addEventListener('click', (e) => {
+    if (!searchBox.contains(e.target) && !searchSuggestions.contains(e.target)) {
+        searchSuggestions.innerHTML = '';
+    }
+});
