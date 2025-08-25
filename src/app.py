@@ -14,8 +14,7 @@ app.add_middleware(
 
 @app.get("/api/data")
 def get_data():
-    df = pd.read_csv("wikipedia_scraper.csv", header=None)
-    #return df.to_dict(orient="records")
+    df = pd.read_csv("data/wikipedia_scraper.csv", header=None)
     data ={}
     current_date = None
     current_category = None
