@@ -1,6 +1,7 @@
 const datedropdown = document.getElementById('datedropdown');
 const searchBox = document.getElementById('search-box');
 const searchBtn = document.getElementById('search-btn');
+const RandomBtn = document.getElementById('random-btn')
 const searchStatus = document.getElementById('search-status');
 const sections = ['itn', 'tfa', 'dyk', 'otd'];
 const searchSuggestions = document.getElementById('search-suggestions');
@@ -98,7 +99,10 @@ fetch('http://127.0.0.1:8000/api/data')
         datedropdown.value = latest_date;
         displayDataForDate(latest_date);
     }
-
+    RandomBtn.addEventListener('click', () => {
+        Object.keys(data)
+    })
+    
     searchBtn.addEventListener('click', () => {
         const term = searchBox.value.toLowerCase().trim();
         if (!term) {
