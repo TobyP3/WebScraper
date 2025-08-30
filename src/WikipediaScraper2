@@ -4,9 +4,17 @@ import random
 import csv
 import datetime
 
+import os
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # project root
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+
+CSV_FILE = os.path.join(DATA_DIR, "wikipedia_scraper.csv")
 
 def save_results(data):
-    filename="wikipedia_scraper.csv"
+    filename = CSV_FILE
     today = datetime.date.today().isoformat()
     with open(filename, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
@@ -15,11 +23,13 @@ def save_results(data):
             writer.writerow([item])
 
 def scrape(scraped):
+    headers = {
+    "User-Agent": "WikipediaScraperBot/1.0 (https://github.com/TobyP3/WebScraper)"}
     data_list = []
     widgets = ["itn","tfa","dyk","otd"]
     for widget in widgets:
         url = 'https://en.wikipedia.org/wiki/Main_Page'
-        response = requests.get(url)
+        response = requests.get(url,headers = headers)
         soup = BeautifulSoup(response.text, 'html.parser')
         if widget != "tfa":
             section = soup.find('div', {'id': 'mp-' + widget})
@@ -47,7 +57,7 @@ def scrape(scraped):
         print("Data already scraped today.")  
 
 def check_scraped():
-    with open("wikipedia_scraper.csv", mode="r", encoding="utf-8") as file:
+    with open(CSV_FILE, mode="r", encoding="utf-8") as file:
         lines = file.readlines()
         for line in reversed(lines):
             line = line.strip()
