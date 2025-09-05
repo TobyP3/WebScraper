@@ -78,6 +78,10 @@ fetch('http://127.0.0.1:8000/api/data')
                 dateData[section].forEach(item => {
                     const li = document.createElement('li');
                     li.textContent = item;
+                    li.addEventListener('click', () => {
+                        const sectionTitle = tile.querySelector('h3').textContent; 
+                        showFactFullscreen(item, sectionTitle);
+                    });
                     list.appendChild(li);
                 });
             } else {
@@ -100,7 +104,24 @@ fetch('http://127.0.0.1:8000/api/data')
         displayDataForDate(latest_date);
     }
     RandomBtn.addEventListener('click', () => {
-        Object.keys(data)
+        let randomDate = dates[Math.floor(Math.random() * dates.length)];
+        let randomSection = sections[Math.floor(Math.random() * sections.length)];
+        let sectionsItems = data[randomDate][randomSection];
+        let randomFact = sectionsItems[Math.floor(Math.random() * sectionsItems.length)];
+        let sectionSentence = '';
+        if (randomSection === "dyk") {
+            sectionSentence = `Did you know that on ${randomDate}:`;
+        } else if (randomSection === "otd") {
+            sectionSentence = `On ${randomDate} in history:`;
+        } else if (randomSection === "itn") {
+            sectionSentence = `In the news on ${randomDate}:`;
+        } else if (randomSection === "tfa") {
+            sectionSentence = `Featured article from ${randomDate}:`;
+        }
+
+        showFactFullscreen(randomFact, sectionSentence);
+
+
     })
     
     searchBtn.addEventListener('click', () => {
@@ -180,6 +201,42 @@ function highlightSearch(term) {
 
     });
 }
+
+function showFactFullscreen(text, sectionTitle) {
+    const box = document.getElementById('fact-box');
+    const content = document.getElementById('fact-content');
+    const title = document.getElementById('fact-title');
+
+    content.textContent = text;
+    title.textContent = sectionTitle;
+
+
+    box.classList.remove('hidden');
+
+    setTimeout(() => {
+        box.dataset.active ="true";
+    },0);
+}
+
+document.addEventListener('click', (e) => {
+    const factBox = document.getElementById('fact-box');
+    const factContent = document.getElementById('fact-content');
+
+    if (factBox.dataset.active === "true" && !factContent.contains(e.target)) {
+        factBox.classList.add('hidden');
+        factBox.dataset.active = "false";
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    const factBox = document.getElementById('fact-box');
+    if (e.key === 'Escape' && !factBox.classList.contains('hidden')) {
+        factBox.classList.add('hidden');
+        factBox.dataset.active = "false";
+    }
+});
+
+
 
 document.addEventListener('click', (e) => {
     if (!searchBox.contains(e.target) && !searchSuggestions.contains(e.target)) {
