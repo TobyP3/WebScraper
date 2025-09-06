@@ -22,7 +22,7 @@ jobs:
           pip install requests beautifulsoup4 pandas fastapi uvicorn
 
       - name: Run scraper
-        run: python scraper/scraper.py   # adjust path if needed
+        run: python src/WikipediaScraper2.py  # adjust path if needed
 
       - name: Commit and push updated CSV
         run: |
