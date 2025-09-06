@@ -1,0 +1,33 @@
+name: Daily Wikipedia Scraper
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # runs every day at 06:00 UTC
+  workflow_dispatch:       # allows manual trigger too
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 pandas fastapi uvicorn
+
+      - name: Run scraper
+        run: python scraper/scraper.py   # adjust path if needed
+
+      - name: Commit and push updated CSV
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add data/wikipedia_scraper.csv
+          git commit -m "Update Wikipedia facts [skip ci]" || echo "No changes to commit"
+          git push
