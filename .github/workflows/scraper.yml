@@ -23,7 +23,7 @@ jobs:
       - name: Debug repo structure
         run: ls -R
       - name: Run scraper
-        run: python src/WikipediaScraper2.py  # adjust path if needed
+        run: python src/WikipediaScraper2.py # adjust path if needed
 
       - name: Commit and push updated CSV
         run: |
