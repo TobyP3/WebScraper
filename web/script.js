@@ -8,7 +8,7 @@ const searchSuggestions = document.getElementById('search-suggestions');
 
 
 
-fetch('http://127.0.0.1:8000/api/data')
+fetch("https://your-service.onrender.com/api/data")
 .then(response => response.json())
 .then(data => {
     let dates = Object.keys(data);
