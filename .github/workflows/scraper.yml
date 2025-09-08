@@ -35,3 +35,8 @@ jobs:
           git add data/wikipedia_scraper.csv
           git commit -m "Update Wikipedia facts [skip ci]" || echo "No changes to commit"
           git push
+      - name: Pull latest changes into Codespace
+        run: |
+          git pull origin main
+        working-directory: ${{ github.workspace }}
+
