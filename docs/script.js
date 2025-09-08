@@ -8,7 +8,7 @@ const searchSuggestions = document.getElementById('search-suggestions');
 
 
 
-fetch("https://your-service.onrender.com/api/data")
+fetch("https://webscraper-htv3.onrender.com")
 .then(response => response.json())
 .then(data => {
     let dates = Object.keys(data);
